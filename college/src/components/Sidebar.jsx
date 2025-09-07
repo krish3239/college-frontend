@@ -13,19 +13,19 @@ function Sidebar() {
     {
       name: "Colleges",
       icon: <GraduationCap size={20} />,
-      path: "/dashboard/colleges",
+      path: "/dashboard/university",
     },
   ];
 
   return (
-    <div className="w-64 bg-white shadow-lg flex flex-col">
+    <div className="w-48 bg-white shadow-lg flex flex-col border-r border-gray-300">
       {/* Logo Section */}
-      <div className="p-6 border-b flex flex-col items-center">
-        <img src={logo} alt="Logo" className="h-13 w-16 rounded-full mb-2" />
+      <div className="p-6  flex flex-col items-center">
+        <img src={logo} alt="Logo" className="h-20 w-20 rounded-full mb-2" />
       </div>
 
       {/* Menu Links */}
-      <nav className="flex-1  space-y-2">
+      <nav className="flex-1 px-2  space-y-2">
         {menuItems.map((item) => (
           <NavLink
             key={item.name}
@@ -46,7 +46,7 @@ function Sidebar() {
       </nav>
 
       {/* Logout Button */}
-      <div className="p-4 border-t">
+      <div className="p-4 border-t border-gray-300">
         <button className="flex items-center w-full px-4 py-2 text-gray-700 rounded-lg hover:bg-gray-100 transition">
           <LogOut size={20} className="mr-3" />
           Logout

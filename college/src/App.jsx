@@ -4,7 +4,7 @@ import Register from "./pages/auth/Register";
 import Dashboard from "./pages/dashboard/Dashboard";
 import University from "./pages/dashboard/University";
 import Result from "./pages/dashboard/Result";
-import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute from "./components/ProtectedRoute"; // <-- Add this import
 import DashboardLayout from "./layouts/DashboardLayout";
 import AuthLayout from "./layouts/AuthLayout";
 
@@ -20,15 +20,16 @@ function App() {
 
         {/* Protected routes */}
         <Route
+          path="/dashboard"
           element={
             <ProtectedRoute>
               <DashboardLayout />
             </ProtectedRoute>
           }
         >
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/university" element={<University />} />
-          <Route path="/result" element={<Result />} />
+          <Route index element={<Dashboard />} />
+          <Route path="university" element={<University />} />
+          <Route path="result" element={<Result />} />
         </Route>
       </Routes>
     </BrowserRouter>

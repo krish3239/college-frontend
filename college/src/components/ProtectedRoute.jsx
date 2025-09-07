@@ -6,15 +6,15 @@ import { Navigate, Outlet } from "react-router-dom";
  * If user is logged in, renders child routes (Outlet).
  * If not, redirects to /login.
  */
-const ProtectedRoute = () => {
-  const { user } = useSelector((state) => state.auth);
+const ProtectedRoute = ({children}) => {
   /*
   if (!user) {
     return <Navigate to="/login" replace />;
   }
 */
+
   // User is logged in, render child routes
-  return <Outlet />;
+  return children;
 };
 
 export default ProtectedRoute;

@@ -2,7 +2,7 @@ import { User } from "lucide-react";
 
 function Navbar() {
   return (
-    <div className="w-full h-25 bg-white border-b border-blue-200 flex items-center justify-between px-6">
+    <div className="w-full h-24  bg-white border-b border-blue-100 flex items-center justify-between px-6">
       {/* Page title (optional) */}
       <h1 className="text-lg justify-center">
         Guru Nanak Dev College of Health & Sciences
