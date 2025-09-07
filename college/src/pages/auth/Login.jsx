@@ -18,18 +18,18 @@ function Login() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex items-center justify-center">
       {/* Left side image */}
-      <div className="hidden md:flex w-1/2 items-center justify-center bg-white">
+     <div className="hidden md:flex w-1/2 p-6 h-screen items-center justify-center">
         <img
           src={myPhoto}
           alt="Students"
-          className="h-full w-full object-contain object-center bg-white"
+          className=" object-contain object-center bg-white rounded-2xl h-full"
         />
-      </div>
+      </div> 
 
       {/* Right side form */}
-      <div className="flex w-full md:w-1/2 items-center justify-center p-6">
+      <div className="flex w-full md:w-1/2 h-screen items-center justify-center p-6">
         <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-lg">
           <div className="flex justify-center mb-6">
             <img src={logo} alt="Logo" className="w-20 h-20" />
@@ -126,7 +126,7 @@ function Login() {
           {/* Don’t have account option */}
           <p className="mt-4 text-center text-sm">
             Don’t have an account?{" "}
-            <Link to="/" className="text-blue-500 hover:underline">
+            <Link to="/register" className="text-blue-500 hover:underline">
               Sign Up
             </Link>
           </p>
