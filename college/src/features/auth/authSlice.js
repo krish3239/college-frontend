@@ -16,7 +16,7 @@ export const login = createAsyncThunk(
     try {
       const response = await authService.login(userData);
       // Expect server to return { user: {...}, token: "JWT_TOKEN" }
-      localStorage.setItem("token", response.token); // store only token
+       // store only token
       return response.user;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
@@ -25,12 +25,11 @@ export const login = createAsyncThunk(
 );
 
 // Register async thunk
-export const register = createAsyncThunk(
+export const registers = createAsyncThunk(
   "auth/register",
   async (userData, thunkAPI) => {
     try {
-      const response = await authService.register(userData);
-      localStorage.setItem("token", response.token);
+      const response = await authService.register(userData);;
       return response.user;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
@@ -79,15 +78,15 @@ const authSlice = createSlice({
         state.error = action.payload;
       })
       // Register
-      .addCase(register.pending, (state) => {
+      .addCase(registers.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(register.fulfilled, (state, action) => {
+      .addCase(registers.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload;
       })
-      .addCase(register.rejected, (state, action) => {
+      .addCase(registers.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })

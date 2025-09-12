@@ -7,11 +7,10 @@ import { Navigate, Outlet } from "react-router-dom";
  * If not, redirects to /login.
  */
 const ProtectedRoute = ({children}) => {
-  /*
-  if (!user) {
+  const token=localStorage.getItem("token")
+  if (!token) {
     return <Navigate to="/login" replace />;
   }
-*/
 
   // User is logged in, render child routes
   return children;

@@ -1,8 +1,13 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { Home, FileText, GraduationCap, LogOut } from "lucide-react";
 import logo from "../assets/logo.jpg"; // your logo from assets
+import { logout } from "../features/auth/authSlice.js";
+import { useDispatch } from "react-redux";
 
 function Sidebar() {
+      const dispatch = useDispatch();
+      const navigate = useNavigate();
+
   const menuItems = [
     { name: "Home", icon: <Home size={20} />, path: "/dashboard" },
     {
@@ -16,6 +21,10 @@ function Sidebar() {
       path: "/dashboard/university",
     },
   ];
+  const handleLogout = () => {
+    dispatch(logout());       // clear Redux + localStorage
+    navigate("/login");       // redirect to login
+  };
 
   return (
     <div className="w-48 bg-white shadow-lg flex flex-col border-r border-gray-300">
@@ -47,7 +56,7 @@ function Sidebar() {
 
       {/* Logout Button */}
       <div className="p-4 border-t border-gray-300">
-        <button className="flex items-center w-full px-4 py-2 text-gray-700 rounded-lg hover:bg-gray-100 transition">
+        <button onClick={handleLogout} className="flex items-center w-full px-4 py-2 text-gray-700 rounded-lg hover:bg-gray-100 transition">
           <LogOut size={20} className="mr-3" />
           Logout
         </button>
