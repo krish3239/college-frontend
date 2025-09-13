@@ -1,37 +1,34 @@
 import logo from "../../assets/logo.jpg";
 import myPhoto from "../../assets/photo.png";
 import { Link, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector, useDispatch } from "react-redux";
-import { login} from "../../features/auth/authSlice"; // Adjust path to your slice
+import { login } from "../../features/auth/authSlice";
+import { toast } from "react-toastify";
 
 function Login() {
-   
-    const navigate = useNavigate();
-    const token=localStorage.getItem("token");
-    if(token)
-    {
-        navigate("/dashboard")
-    }
-  
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+  if (token) {
+    navigate("/dashboard");
+  }
+
   const dispatch = useDispatch();
 
-  // Get state from Redux store
   const { user, isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.auth
   );
 
-  // Redirect if login is successful or if user is already logged in
   useEffect(() => {
     if (isError) {
-      console.error(message);
+      toast.error(message || "Login failed!");
     }
 
     if (isSuccess || user) {
+      toast.success("Login successful!");
       navigate("/dashboard");
     }
-
   }, [user, isError, isSuccess, message, navigate, dispatch]);
 
   const {
@@ -41,7 +38,6 @@ function Login() {
   } = useForm();
 
   const onSubmit = (data) => {
-    // Only dispatch login if not loading
     if (!isLoading) {
       dispatch(login(data));
     }
@@ -54,7 +50,7 @@ function Login() {
         <img
           src={myPhoto}
           alt="Students"
-          className=" object-contain object-center  rounded-2xl h-full"
+          className="object-contain object-center rounded-2xl h-full"
         />
       </div>
 
@@ -67,13 +63,8 @@ function Login() {
 
           <h2 className="text-2xl font-bold text-center mb-6">Log In</h2>
 
-          {/* Display error message */}
-          {isError && (
-            <div className="text-red-500 text-center mb-4">{message}</div>
-          )}
-
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            {/* Email - Required */}
+            {/* Email */}
             <input
               type="email"
               placeholder="Email Address"
@@ -115,7 +106,7 @@ function Login() {
             </button>
           </form>
 
-          {/* Don't have account option */}
+          {/* Register link */}
           <p className="mt-4 text-center text-sm">
             Don't have an account?{" "}
             <Link to="/register" className="text-blue-500 hover:underline">

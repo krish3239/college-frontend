@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import axiosInstance from "../../api/axiosInstance";
+import { toast } from "react-toastify"; // Import toast
+import EnquiryForm from "@/components/Enquiryform";
 
 const Dashboard = ({ studentData: initialStudentData }) => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -12,7 +14,7 @@ const Dashboard = ({ studentData: initialStudentData }) => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [error, setError] = useState("");
-  const [studentData, setStudentData] = useState(initialStudentData || {}); // Add state for student data
+  const [studentData, setStudentData] = useState(initialStudentData || {});
 
   // Add the missing fetchStudentByQuery function
   const fetchStudentByQuery = async (query) => {
@@ -41,14 +43,20 @@ const Dashboard = ({ studentData: initialStudentData }) => {
       status: "",
       bloodGroup: "",
     });
-    const data = await fetchStudentByQuery(searchQuery);
-    if (data) {
-      reset(data);
-      setStudentData(data); // Update display data too
-    } else {
-      reset({});
-      setStudentData({}); // Clear display data
-      setError("No student found with given email or phone.");
+    try {
+      const data = await fetchStudentByQuery(searchQuery);
+      if (data) {
+        reset(data);
+        setStudentData(data);
+        toast.success("Student found successfully! ✅");
+      } else {
+        reset({});
+        setStudentData({});
+        setError("No student found with given email or phone.");
+        toast.error("No student found with given email or phone. 😔");
+      }
+    } catch (err) {
+      toast.error("An error occurred during search. 😞");
     }
   };
 
@@ -57,38 +65,40 @@ const Dashboard = ({ studentData: initialStudentData }) => {
       try {
         const res = await axiosInstance.get(`student/search/${user["email"]}`);
         if (res.data && res.data.success) {
-          reset(res.data.data); // Update form
-          setStudentData(res.data.data); // Update display data
+          reset(res.data.data);
+          setStudentData(res.data.data);
+          toast.success("Your data has been loaded. ✅");
         } else {
           reset({});
           setStudentData({});
-          setError("No student found with given email or phone.");
+          setError("No student data found.");
+          toast.error("No student data found. 😔");
         }
       } catch (error) {
         console.log("the fetching error", error);
-        setError("Error loading student data");
+        setError("Error loading student data.");
+        toast.error("Error loading your data. 😞");
       }
     }
   };
 
   useEffect(() => {
     studentView();
-  }, [role]); // Add proper dependencies
+  }, [role]);
 
   const onSubmit = async (data) => {
     try {
-      // Add API call to actually update the data
       const res = await axiosInstance.patch(`student/${data.email}`, data);
       if (res.data && res.data.success) {
         console.log("Updated Data:", data);
-        alert("Student data updated successfully!");
-        setStudentData(data); // Update display data
+        toast.success("Student data updated successfully! ✅");
+        setStudentData(data);
       } else {
-        alert("Failed to update student data");
+        toast.error("Failed to update student data. 😟");
       }
     } catch (error) {
       console.log("Update error:", error);
-      alert("Error updating student data");
+      toast.error("Error updating student data. 😞");
     }
   };
 
@@ -97,7 +107,6 @@ const Dashboard = ({ studentData: initialStudentData }) => {
       <h2 className="text-2xl font-bold mb-6">
         {role === "admin" ? "Admin - Edit Student" : "Student Details"}
       </h2>
-
       {/* Admin Search Box */}
       {role === "admin" && (
         <div className="mb-6 flex gap-2">

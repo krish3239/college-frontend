@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import authService from "./authService";
+import { toast } from "react-toastify";
 
 // Initial state
 const initialState = {
@@ -19,6 +20,7 @@ export const login = createAsyncThunk(
        // store only token
       return response.user;
     } catch (error) {
+      toast.error(error.message)
       return thunkAPI.rejectWithValue(error.message);
     }
   }
@@ -32,6 +34,7 @@ export const registers = createAsyncThunk(
       const response = await authService.register(userData);;
       return response.user;
     } catch (error) {
+      toast.error(error.message)
       return thunkAPI.rejectWithValue(error.message);
     }
   }
@@ -59,6 +62,7 @@ const authSlice = createSlice({
     logout: (state) => {
       state.user = null;
       state.token = null;
+      toast.success("Logout Successfully")
       localStorage.removeItem("token");
     },
   },

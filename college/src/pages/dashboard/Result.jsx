@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import axiosInstance from "../../api/axiosInstance";
+import { toast } from "react-toastify"; // Import toast
 
 const Result = () => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -40,14 +41,20 @@ const Result = () => {
     if (role === "student" && user?.rollNumber) {
       handleSearch(user.rollNumber);
     }
-  }, [role,user?.rollNumber]);
+  }, [role, user?.rollNumber]);
 
   // API call to fetch result by roll number
   const fetchResultByRoll = async (rollNumber) => {
     try {
       const response = await axiosInstance.get(`/result/student/${rollNumber}`);
+      if (response.data?.success) {
+        toast.success("Result found successfully! ✅");
+      } else {
+        toast.info("No existing result found. You can create a new one. ✍️");
+      }
       return response.data;
     } catch (error) {
+      toast.error("An error occurred while fetching the result. 😞");
       throw error.response?.data || { message: 'Failed to fetch result' };
     }
   };
@@ -56,8 +63,12 @@ const Result = () => {
   const createResult = async (resultData) => {
     try {
       const response = await axiosInstance.post('/result', resultData);
+      if (response.data?.success) {
+        toast.success("Result created successfully! ✨");
+      }
       return response.data;
     } catch (error) {
+      toast.error("Failed to create result. 😞");
       throw error.response?.data || { message: 'Failed to create result' };
     }
   };
@@ -66,8 +77,12 @@ const Result = () => {
   const updateResult = async (rollNumber, resultData) => {
     try {
       const response = await axiosInstance.put(`/result/${rollNumber}`, resultData);
+      if (response.data?.success) {
+        toast.success("Result updated successfully! ✅");
+      }
       return response.data;
     } catch (error) {
+      toast.error("Failed to update result. 😟");
       throw error.response?.data || { message: 'Failed to update result' };
     }
   };
@@ -125,30 +140,37 @@ const Result = () => {
     // Validate data before submission
     if (!data.studentInfo.fullName.trim()) {
       setError("Full name is required");
+      toast.error("Full name is required.");
       return;
     }
     if (!data.studentInfo.rollNumber.trim()) {
       setError("Roll number is required");
+      toast.error("Roll number is required.");
       return;
     }
     if (!data.studentInfo.course.trim()) {
       setError("Course is required");
+      toast.error("Course is required.");
       return;
     }
     if (!data.studentInfo.semester.trim()) {
       setError("Semester is required");
+      toast.error("Semester is required.");
       return;
     }
     if (!data.studentInfo.session.trim()) {
       setError("Session is required");
+      toast.error("Session is required.");
       return;
     }
     if (!data.subjects || data.subjects.length === 0) {
       setError("At least one subject is required");
+      toast.error("At least one subject is required.");
       return;
     }
     if (!data.status) {
       setError("Result status is required");
+      toast.error("Result status is required.");
       return;
     }
 
@@ -157,6 +179,7 @@ const Result = () => {
       const subject = data.subjects[i];
       if (!subject.code.trim() || !subject.name.trim()) {
         setError(`Subject ${i + 1}: Code and name are required`);
+        toast.error(`Subject ${i + 1}: Code and name are required.`);
         return;
       }
     }
@@ -176,7 +199,6 @@ const Result = () => {
       }
 
       if (response.success) {
-        alert(`Result ${isEditing ? 'updated' : 'saved'} successfully!`);
         setIsEditing(true);
         setCurrentRollNumber(data.studentInfo.rollNumber);
         

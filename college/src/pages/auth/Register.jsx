@@ -1,13 +1,20 @@
 import logo from "../../assets/logo.jpg";
 import myPhoto from "../../assets/photo.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { registers } from "../../features/auth/authSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
 
 function Register() {
   const dispatch = useDispatch();
-  
+  const navigate = useNavigate();
+
+  const { user, isLoading, isError, isSuccess, message } = useSelector(
+    (state) => state.auth
+  );
+
   const {
     register,
     handleSubmit,
@@ -15,9 +22,22 @@ function Register() {
   } = useForm();
 
   const onSubmit = (data) => {
-    // Only dispatch register if not loading
-    dispatch(registers(data));
+    if (!isLoading) {
+      dispatch(registers(data));
+    }
   };
+
+  // ✅ Toast notifications
+  useEffect(() => {
+    if (isError) {
+      toast.error(message || "Registration failed!");
+    }
+
+    if (isSuccess || user) {
+      toast.success("Registration successful!");
+      navigate("/dashboard"); // redirect after success
+    }
+  }, [isError, isSuccess, user, message, navigate]);
 
   return (
     <div className="flex items-center justify-center">
@@ -26,9 +46,9 @@ function Register() {
         <img
           src={myPhoto}
           alt="Students"
-          className=" object-contain object-center  rounded-2xl h-full"
+          className="object-contain object-center rounded-2xl h-full"
         />
-      </div> 
+      </div>
 
       {/* Right side form */}
       <div className="flex w-full md:w-1/2 h-screen items-center justify-center p-6">
@@ -40,7 +60,7 @@ function Register() {
           <h2 className="text-2xl font-bold text-center mb-6">Sign Up</h2>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            {/* Email - Required */}
+            {/* Email */}
             <input
               type="email"
               placeholder="Email Address"
@@ -71,9 +91,14 @@ function Register() {
             {/* Submit */}
             <button
               type="submit"
-              className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600"
+              className={`w-full text-white py-2 rounded-lg transition-colors ${
+                isLoading
+                  ? "bg-blue-300 cursor-not-allowed"
+                  : "bg-blue-500 hover:bg-blue-600"
+              }`}
+              disabled={isLoading}
             >
-              Sign Up
+              {isLoading ? "Signing up..." : "Sign Up"}
             </button>
           </form>
 
